@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 export const PORT = process.env.PORT || 4000;
 
 export const conection ={
@@ -8,4 +11,4 @@ export const conection ={
     DB: process.env.DB || "eventspace"
 }
 
-export const SALT = process.env.SALT;
+export const SALT = parseInt(process.env.SALT);

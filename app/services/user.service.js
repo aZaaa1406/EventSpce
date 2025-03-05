@@ -3,12 +3,15 @@ import userModels from "../models/user.models.js";
 class UserService{
     async registerUser(userData){
         try{
-
             userData.email = userData.email.toLowerCase().trim();
             const emailExist = await userModels.findByEmail(userData.email);
-            
-            const registerUser = await userModels.registerUser(dataUser);
-            if(!registerUser){
+            if (emailExist) {
+                console.log("El email ya existe en la base de datos");
+                throw new Error("El email ya existe en la base de datos");
+            }
+            const registerUser = await userModels.registerUser(userData);
+            console.log(registerUser);
+            if (!registerUser.success) {
                 return false;
             }
             return true;
