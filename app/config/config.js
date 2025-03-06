@@ -12,3 +12,5 @@ export const conection ={
 }
 
 export const SALT = parseInt(process.env.SALT);
+
+export const SECRET_KEY_JWT = process.env.SECRET_KEY_JWT;

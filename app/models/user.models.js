@@ -9,20 +9,31 @@ class userModel{
         const [rows] = await pool.execute(query, [email]);
         return rows.length > 0; 
     }
+    async getPassword(email){
+        //obtenemos el password del usuario y comparamos
+        const query = "call eventspace.getPassword(?)"
+        const [rows] = await pool.execute(query, [email]);
+        const user = rows[0][0];
+
+        return user.token
+    }
+    async getInfo(email){
+        const query = "call eventspace.getInfoUser(?)"
+        const [rows] = await pool.execute(query, [email]);
+        const user = rows[0][0];
+        return user;
+    }
     
 
     async registerUser(userData){
         try {
+            
             userData.email = userData.email.toLowerCase().trim();
             const emailExist = await this.findByEmail(userData.email);
             if (emailExist) {
-                console.log("El email ya existe en la base de datos");
                 return { success: false, message: "El email ya existe en la base de datos" };
             }
-
-            console.log("Datos recibidos del servicio", userData);
             const hashPassword = await bcrypt.hash(userData.password, SALT);
-            console.log(hashPassword);
             const [result] = await pool.query("CALL registerUser(?,?,?,?,?,?,?,?)",[
                 userData.email,
                 userData.telefono,
@@ -41,25 +52,20 @@ class userModel{
             }
     
         } catch (error) {
-            console.error("Error en registerUser:", error);
             throw new Error("Error en el servidor");
         }
     }
-    async loginUser(userData){
-        try {
-            //le damoss formato al email
-            userData.email = userData.email.toLowerCase().trim();
-            //validamos que el email este asociado a un usuario
-            const emailExist = await this.findByEmail(userData.email);
-            if (!emailExist) {
-                console.log("El email no existe en la base de datos");
-                return { success: false, message: "El email no existe en la base de datos" };
-            }
-
-
-        } catch (error) {
-            
+    
+    async LoginUser(userData){
+        userData.email = userData.email.toLowerCase().trim();
+        const passwordUser = await this.getPassword(userData.email);
+        const verifyPassword = await bcrypt.compare(userData.password, passwordUser);
+        if (!verifyPassword) {
+            return false
         }
+        const user = await this.getInfo(userData.email);
+        return user;
+
     }
     
 }
