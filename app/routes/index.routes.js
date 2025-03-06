@@ -4,7 +4,10 @@ export const routes = Router();
 
 routes.use('/users', userRoutes);
 routes.get('/', (req, res) => {
-    res.send('Hello World');
+    res.send('Hello World').status(200).json({
+        status:200,
+        message:"Hello World"
+    });
 });
 
 export default routes;
