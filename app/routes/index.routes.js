@@ -3,7 +3,7 @@ import userRoutes from "./user.routes.js";
 export const routes = Router();
 
 routes.use('/users', userRoutes);
-routes.get('/', (req, res) => {
+routes.get('/hello world', (req, res) => {
     res.send('Hello World');
 });
 
