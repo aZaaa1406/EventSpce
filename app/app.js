@@ -1,11 +1,18 @@
 import express from 'express';
-import { routes } from './routes/index.routes.js';
-import { PORT } from "./config/config.js";
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import { routes } from './routes/index.routes.js';
+import { PORT, URL } from "./config/config.js";
+
 import { sesionMid } from './middlewares/sesions.js';
+
 
 export const app = express();
 
+app.use(cors({
+    origin: URL,
+    credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser())
 app.use(sesionMid)

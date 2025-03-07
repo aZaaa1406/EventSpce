@@ -53,3 +53,57 @@ export const LogoutUser = async (req,res)=>{
         throw error;
     }
 }
+
+export const forgotPassword = async (req, res)=>{
+    try{
+        console.log(req.body.email);
+        const dEmail = req.body.email;
+        const token = await userService.forgotPassword(dEmail);
+        if(!token){
+            return res.status(400).json({
+                status:400,
+                message:"El email no existe en la base de datos"
+            })
+        }
+        return res
+        .cookie('reset_token', token,{
+            http_only: true,
+            secure: false,
+            sameSite: 'strict',
+            masAge: 1000*60*15
+        })
+        .status(200)
+        .json({
+            status:200,
+            message:"Se ha enviado un correo para restablecer la contraseña"
+        })
+    }catch(e){
+        throw e;
+    }
+}
+
+export const resetPassword = async (req, res)=>{
+    const token = req.cookies.reset_token;
+    if(!token){
+        return res.status(400).json({
+            status:400,
+            message:"Error al restablecer la contraseña"
+        })
+    }
+    const newPassword = req.body.password;
+
+    const reset = await userService.resetPassword(newPassword, token);
+    if(!reset){
+        return res.status(400).json({
+            status:400,
+            message:"Error al restablecer la contraseña"
+        })
+    }
+    return res
+    .clearCookie("reset_token")
+    .status(200)
+    .json({
+        status:200,
+        message:"Contraseña restablecida correctamente"
+    })
+}

@@ -15,3 +15,10 @@ export const loginUserSchema = joi.object({
     email: joi.string().email().required().case('lower'),
     password: joi.string().min(6).max(8).pattern(new RegExp(`/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#\$%&])[a-zA-Z0-9#\$%&]{6,8}$/`)).required()
 })
+
+export const forgotPasswordSchema = joi.object({
+    email: joi.string().email().required().case('lower')
+})
+export const resetPasswordSchema = joi.object({
+    password: joi.string().min(6).max(8).pattern(new RegExp(`/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#\$%&])[a-zA-Z0-9#\$%&]{6,8}$/`)).required()
+})
