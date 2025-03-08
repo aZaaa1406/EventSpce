@@ -19,9 +19,9 @@ class userModel{
     }
     async getInfo(email){
         const query = "call eventspace.getInfoUser(?)"
-        const [rows] = await pool.execute(query, [email]);
-        const user = rows[0][0];
-        return user;
+        const [rows] = await pool.query(query, [email]);
+        console.log(rows[0][0]);
+        return rows[0][0];
     }
     
 
@@ -66,6 +66,13 @@ class userModel{
         const user = await this.getInfo(userData.email);
         return user;
 
+    }
+
+    async resetPassword(newPassword){
+        const newPasswordHash = await bcrypt.hash(newPassword, SALT);
+        const query = "UPDATE token SET token = where email = ?"
+        const [rows] = await pool.execute(query, [newPasswordHash]);
+        return rows.affectedRows > 0;
     }
     
 }
