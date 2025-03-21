@@ -11,3 +11,10 @@ export const pool = createPool({
     connectionLimit: 10,
     queueLimit: 0
 })
+
+pool.connect((err)=>{
+    if(err){
+        console.log(err);
+    }
+    console.log("DB is connected");
+})
