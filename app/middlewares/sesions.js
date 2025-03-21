@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { SECRET_KEY_JWT } from '../config/config.js'; // Asegúrate de tener la clave secreta para verificar el token
 
 export const sesionMid = (req, res, next) => {
-    const token = req.cookies?.access_token; // Obtenemos el token de las cookies
+    const token = req.cookies.access_token; // Obtenemos el token de las cookies
 
     if (!token) {
         req.user = null; // Si no hay token, el usuario está no autenticado

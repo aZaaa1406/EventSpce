@@ -1,6 +1,7 @@
 import { pool } from "../config/db.js";
 import bcrypt from 'bcrypt';
 import { SALT } from "../config/config.js";
+import { ConnectionError, InternalServerError, ValidationError } from "../utils/errors.js";
 class userModel{
     //Funcion que verifica que la existencia del email en la BD
     async findByEmail(email) {
@@ -27,11 +28,12 @@ class userModel{
 
     async registerUser(userData){
         try {
-            
+            console.log(userData);
             userData.email = userData.email.toLowerCase().trim();
             const emailExist = await this.findByEmail(userData.email);
             if (emailExist) {
-                return { success: false, message: "El email ya existe en la base de datos" };
+                console.log("email existente");
+                return false
             }
             const hashPassword = await bcrypt.hash(userData.password, SALT);
             const [result] = await pool.query("CALL registerUser(?,?,?,?,?,?,?,?)",[
@@ -46,33 +48,43 @@ class userModel{
             ]);
     
             if (result.affectedRows > 0) {
-                return { success: true};
+                console.log("todo mal");
+                return false
             } else {
-                return { success: false};
+                console.log("todo nais");
+                return true
             }
     
         } catch (error) {
-            throw new Error("Error en el servidor");
+            throw error
         }
     }
     
     async LoginUser(userData){
-        userData.email = userData.email.toLowerCase().trim();
+        try {
+            userData.email = userData.email.toLowerCase().trim();
         const passwordUser = await this.getPassword(userData.email);
         const verifyPassword = await bcrypt.compare(userData.password, passwordUser);
         if (!verifyPassword) {
-            return false
+            return false;
         }
         const user = await this.getInfo(userData.email);
         return user;
+        } catch (error) {
+            throw error
+        }
 
     }
 
     async resetPassword(newPassword){
-        const newPasswordHash = await bcrypt.hash(newPassword, SALT);
-        const query = "UPDATE token SET token = where email = ?"
-        const [rows] = await pool.execute(query, [newPasswordHash]);
-        return rows.affectedRows > 0;
+        try {
+            const newPasswordHash = await bcrypt.hash(newPassword, SALT);
+            const query = "UPDATE token SET token = where email = ?"
+            const [rows] = await pool.execute(query, [newPasswordHash]);
+            return rows.affectedRows > 0;
+        } catch (error) {
+            throw error
+        }
     }
     
 }

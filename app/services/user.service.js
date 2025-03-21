@@ -7,25 +7,22 @@ import { sendMail } from "./mail.service.js";
 class UserService{
     async registerUser(userData){
         try{
+            console.log(userData);
             userData.email = userData.email.toLowerCase().trim();
             const {error} = registerUserSchema.validate(userData);
             if (error) {
-                return { success: false };
-            }
-
-            const emailExist = await userModels.findByEmail(userData.email);
-            if (emailExist) {
-                throw new Error("El email ya existe en la base de datos");
+                throw error
+                console.log("error en la validacion del esquema");
+                return false
             }
             const registerUser = await userModels.registerUser(userData);
-            console.log(registerUser);
-            if (!registerUser.success) {
-                return false;
+            if (!registerUser) {
+                return false
             }
             return true;
 
         }catch(e){
-            throw new Error("Error en el servidor")
+            throw e;
         }
     }
     async LoginUser(userData){
@@ -33,18 +30,21 @@ class UserService{
             userData.email = userData.email.toLowerCase().trim();
             const {error} = loginUserSchema.validate(userData);
             if (error) {
-                return { success: false };
+                console.log("Error en la validacion del esquema");
+                console.log(error);
+                return false
             }
             const user = await userModels.LoginUser(userData);
             if (!user) {
-                return { success: false };
+                console.log("Error en el modelo66");
+                return false
             }
             const token = jwt.sing({user}, SECRET_KEY_JWT, {expiresIn: "1h"}, );
 
             return token;
             
         } catch (error) {
-            
+            throw error
         }
     }
     async forgotPassword(dEmail){
@@ -52,16 +52,15 @@ class UserService{
         console.log(email);
         const {error}= forgotPasswordSchema.validate({email});
         if (error) {
-            return false;
+            return false
         }
         const emailValidate = await userModels.findByEmail(email);
         if (!emailValidate) {
-            return false;
+            return false
         }
         const user = await userModels.getInfo(email);
-        console.log("El usuario es",user);
         if (!user) {
-            return false;
+            return false
         }
         const token = jwt.sign({user}, SECRET_KEY_JWT, {expiresIn: "15m"});
         
@@ -73,19 +72,19 @@ class UserService{
     async resetPassword(newPassword, token){
         const tokenValidate = jwt.verify(token, SECRET_KEY_JWT);
         if (!tokenValidate) {
-            return false;
+            return false
         }
         const {error} = resetPasswordSchema.validate({newPassword});
         if (error) {
-            return false;
+            return false
         }
         const newPasswordHash = await bcrypt.hash(newPassword, SALT);
         const query = "UPDATE token SET token = ? where email = ?"
         const result = await pool.query(query, [newPasswordHash, tokenValidate.email]);
         if (result.affectedRows < 0) {
-            return false;
+            return false
         }
-        return true
+        return true;
 
     }
 
