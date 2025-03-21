@@ -12,9 +12,11 @@ export const pool = createPool({
     queueLimit: 0
 })
 
-pool.connect((err)=>{
+pool.getConnection((err, conection)=>{
     if(err){
-        console.log(err);
+        console.log("Error al conectar la bdd", err);
+        return
     }
-    console.log("DB is connected");
+    console.log("Conexion correcta a la bdd");
+    pool.releaseConnection(conection);
 })
