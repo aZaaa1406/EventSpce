@@ -9,6 +9,5 @@ export const pool = createPool({
     database: conection.DB,
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0,
-    connectTimeout: 10000
+    queueLimit: 0
 })
