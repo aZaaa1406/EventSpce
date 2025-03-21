@@ -6,5 +6,8 @@ export const pool = createPool({
     host: conection.HOST,
     user: conection.USER,
     password: conection.PASSWORD,
-    database: conection.DB
+    database: conection.DB,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 })
