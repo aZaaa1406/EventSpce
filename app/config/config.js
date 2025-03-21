@@ -10,6 +10,8 @@ export const conection ={
     PASSWORD: process.env.DB_PASSWORD || "root",
     DB: process.env.DB_NAME || "eventspace"
 }
+console.log(process.env.DB_PORT, process.env.DB_HOST, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME);
+
 
 export const SALT = parseInt(process.env.SALT);
 
