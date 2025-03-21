@@ -19,5 +19,5 @@ pool.getConnection((err, conection)=>{
         return
     }
     console.log("Conexion correcta a la bdd");
-    pool.releaseConnection(conection);
+    conection.releaseConnection();
 })
