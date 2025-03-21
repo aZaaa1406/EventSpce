@@ -10,6 +10,7 @@ export const pool = createPool({
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
+    , connectTimeout: 15000
 })
 
 pool.getConnection((err, conection)=>{
