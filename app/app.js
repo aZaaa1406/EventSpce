@@ -10,7 +10,7 @@ import { errorHandler } from './middlewares/errorMiddleware.js';
 export const app = express();
 
 app.use(cors({
-    origin: URL,
+    origin: URL || "https://www.thunderclient.com",
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
