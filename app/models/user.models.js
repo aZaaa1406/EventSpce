@@ -7,13 +7,13 @@ class userModel{
     async findByEmail(email) {
         console.log("email recibido del servicio", email);
         const query = "SELECT 1 FROM contacto WHERE email = ? LIMIT 1"; 
-        const [rows] = await pool.execute(query, [email]);
+        const [rows] = await pool.query(query, [email]);
         return rows.length > 0; 
     }
     async getPassword(email){
         //obtenemos el password del usuario y comparamos
         const query = "call eventspace.getPassword(?)"
-        const [rows] = await pool.execute(query, [email]);
+        const [rows] = await pool.query(query, [email]);
         const user = rows[0][0];
 
         return user.token
