@@ -20,6 +20,7 @@ class userModel {
         console.log("query ejecutada");
         console.log(rows);
         const user = rows[0][0];
+        console.log(user.token);
 
         return user.token
     }
