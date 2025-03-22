@@ -6,7 +6,7 @@ export const PORT = process.env.PORT || 4000;
 console.log(process.env.DB_PORT, process.env.DB_HOST, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME);
 
 export const conection ={
-    PORT: process.env.DB_PORT || 3306,
+    PORT: Number(process.env.DB_PORT) || 3306,
     HOST: process.env.DB_HOST || "127.0.0.1",
     USER: process.env.DB_USER || "root",
     PASSWORD: process.env.DB_PASSWORD || "root",

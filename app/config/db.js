@@ -3,6 +3,7 @@ import { conection } from "./config.js";
 
 
 export const pool = createPool({
+    port: conection.PORT,
     host: conection.HOST,
     user: conection.USER,
     password: conection.PASSWORD,
