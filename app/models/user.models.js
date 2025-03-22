@@ -16,6 +16,7 @@ class userModel {
         console.log("Ejecutando query");
         const query = "call eventspace.getPassword(?)"
         const [rows] = await pool.query(query, [email]);
+
         console.log("query ejecutada");
         console.log(rows);
         const user = rows[0][0];
@@ -24,7 +25,7 @@ class userModel {
     }
     async getInfo(email) {
         console.log(email);
-        const query = "call eventspace.getInfoUser(?)"
+        const query = "call getInfoUser(?)"
         const [rows] = await pool.query(query, [email]);
         console.log("filas obtenidas", rows[0][0]);
         return rows[0][0];
