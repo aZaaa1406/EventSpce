@@ -14,7 +14,7 @@ class userModel {
         //obtenemos el password del usuario y comparamos
         console.log("Datos recibidos en el modelo", email);
         console.log("Ejecutando query");
-        const query = "call eventspace.getPassword(?)"
+        const query = "CALL getPassword(?)"
         const [rows] = await pool.query(query, [email]);
 
         console.log("query ejecutada");
@@ -75,6 +75,7 @@ class userModel {
                 console.log("email no existente");
                 return false
             }
+            console.log("Email existente");
             const passwordUser = await this.getPassword(userData.email);
             console.log("Contraseña obtenida", password);
             const verifyPassword = await bcrypt.compare(userData.password, passwordUser);
