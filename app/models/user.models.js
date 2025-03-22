@@ -21,7 +21,6 @@ class userModel {
         console.log(rows);
         const user = rows[0][0];
         console.log(user.token);
-
         return user.token
     }
     async getInfo(email) {
@@ -78,7 +77,7 @@ class userModel {
             }
             console.log("Email existente");
             const passwordUser = await this.getPassword(userData.email);
-            console.log("Contraseña obtenida", password);
+            console.log("Contraseña obtenida", passwordUser);
             const verifyPassword = await bcrypt.compare(userData.password, passwordUser);
             console.log("Error", verifyPassword);
             if (verifyPassword) {
