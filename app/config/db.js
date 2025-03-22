@@ -13,11 +13,8 @@ export const pool = createPool({
     , connectTimeout: 15000
 })
 
-pool.getConnection((err, conection)=>{
-    if(err){
-        console.log("Error al conectar la bdd", err);
-        return
-    }
-    console.log("Conexion correcta a la bdd");
-    conection.releaseConnection();
+pool.query("SELECT 1 + 1 as result").then(([rows]) => {
+    console.log("DB connected")
+}).catch((error) => {
+    console.log("Error in DB connection", error)
 })
