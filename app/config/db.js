@@ -13,8 +13,9 @@ export const pool = createPool({
     , connectTimeout: 15000
 })
 
-pool.query("SELECT 1 + 1 as result").then(([rows]) => {
-    console.log("DB connected")
-}).catch((error) => {
-    console.log("Error in DB connection", error)
+pool.getConnection().then(connection => {
+    console.log("Database is connected");
+    connection.release();
+}).catch(error => {
+    console.log(error);
 })
