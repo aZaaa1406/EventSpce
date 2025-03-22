@@ -22,7 +22,7 @@ export const LoginUser = async (req,res)=>{
     try {
         const userData = req.body;
         const login = await userService.LoginUser(userData);
-
+        console.log(login);
         return res
         .cookie("access_token", login, {
             http_only: true,

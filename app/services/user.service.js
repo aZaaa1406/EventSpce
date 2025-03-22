@@ -27,6 +27,7 @@ class UserService{
     }
     async LoginUser(userData){
         try {
+            console.log(userData);
             userData.email = userData.email.toLowerCase().trim();
             const {error} = loginUserSchema.validate(userData);
             if (error) {
@@ -35,12 +36,18 @@ class UserService{
                 return false
             }
             const user = await userModels.LoginUser(userData);
+            console.log("Datos recibidos del modelo", user);
+            // if (!user) {
+            //     console.log("Error en el modelo");
+            //     return false
+            // }
             if (!user) {
-                console.log("Error en el modelo66");
-                return false
+                console.log("Error en el modelo");
+                return false;
             }
-            const token = jwt.sing({user}, SECRET_KEY_JWT, {expiresIn: "1h"}, );
-
+            const token = jwt.sign(user, SECRET_KEY_JWT, { expiresIn: "1h" });
+            console.log("Datos que vamos a pasar", {user});
+            console.log("Token generado", token);
             return token;
             
         } catch (error) {
