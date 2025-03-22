@@ -46,7 +46,7 @@ class UserService{
                 return false;
             }
             const token = jwt.sign(user, SECRET_KEY_JWT, { expiresIn: "1h" });
-            console.log("Datos que vamos a pasar", {user});
+            console.log("Datos que vamos a pasar", user);
             console.log("Token generado", token);
             return token;
             

@@ -13,8 +13,10 @@ class userModel {
     async getPassword(email) {
         //obtenemos el password del usuario y comparamos
         console.log("Datos recibidos en el modelo", email);
+        console.log("Ejecutando query");
         const query = "call eventspace.getPassword(?)"
         const [rows] = await pool.query(query, [email]);
+        console.log("query ejecutada");
         console.log(rows);
         const user = rows[0][0];
 
@@ -67,8 +69,13 @@ class userModel {
         try {
             console.log("Datos recibidos en el modelo", userData);
             userData.email = userData.email.toLowerCase().trim();
+            const emailExist = await this.findByEmail(userData.email);
+            if (!emailExist) {
+                console.log("email no existente");
+                return false
+            }
             const passwordUser = await this.getPassword(userData.email);
-            console.log(passwordUser);
+            console.log("Contraseña obtenida", password);
             const verifyPassword = await bcrypt.compare(userData.password, passwordUser);
             console.log("Error", verifyPassword);
             if (verifyPassword) {
