@@ -5,16 +5,14 @@ export const registerUser = async (req,res)=>{
         const userData = req.body;
         console.log(userData);
         const register = await userService.registerUser(userData);
-        if(register){
-            return res.status(200).json({
-                status:200,
-                message:"Usuario registrado correctamente"
-            })
-        }
-        return res.status(400).json({
-            error :error.message})
+        return res.status(200).json({
+            status:200,
+            message:"Usuario registrado correctamente"
+        })
     } catch (error) {
-        throw error
+        return res.status(400).json({
+            error: error.message
+        })
     }
 }
 export const LoginUser = async (req,res)=>{
