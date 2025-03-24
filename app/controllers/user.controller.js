@@ -12,8 +12,7 @@ export const registerUser = async (req,res)=>{
             })
         }
         return res.status(400).json({
-            status:400,
-            message:"Error al registrar el usuario"})
+            error :error.message})
     } catch (error) {
         throw error
     }
@@ -26,7 +25,7 @@ export const LoginUser = async (req,res)=>{
         return res
         .cookie("access_token", login, {
             http_only: true,
-            secure: false,
+            secure: process.env.NODE_ENV === 'production' ? true : false,
             sameSite: 'strict',
             masAge: 1000*60*60
         }).status(200).json({
@@ -34,7 +33,9 @@ export const LoginUser = async (req,res)=>{
             message:"Usuario logeado correctamente"
         })
     } catch (error) {
-        
+        return res.status(400).json({
+            error: error.message
+        })
     }
 }
 

@@ -8,17 +8,21 @@ import { errorHandler } from './middlewares/errorMiddleware.js';
 
 
 export const app = express();
-
+app.use(express.json());
+app.use(cookieParser())
+app.use(sesionMid)
+app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+    console.log("Solicitud entrante:", req.method, req.url);
+    console.log("CORS origin:", req.get('Origin'));
+    next();
+});
 app.use(cors({
     origin: URL || "https://www.thunderclient.com",
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));
-app.use(express.json());
-app.use(cookieParser())
-app.use(sesionMid)
-app.use(express.urlencoded({ extended: true }));
 app.use('/api', routes)
 
 

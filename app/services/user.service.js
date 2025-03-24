@@ -11,13 +11,11 @@ class UserService{
             userData.email = userData.email.toLowerCase().trim();
             const {error} = registerUserSchema.validate(userData);
             if (error) {
-                throw error
-                console.log("error en la validacion del esquema");
-                return false
+                throw new Error("Error en la validacion del esquema");
             }
             const registerUser = await userModels.registerUser(userData);
             if (!registerUser) {
-                return false
+                throw new Error("Error al registrar el usuario");
             }
             return true;
 
@@ -27,27 +25,13 @@ class UserService{
     }
     async LoginUser(userData){
         try {
-            console.log(userData);
             userData.email = userData.email.toLowerCase().trim();
             const {error} = loginUserSchema.validate(userData);
             if (error) {
-                console.log("Error en la validacion del esquema");
-                console.log(error);
-                return false
+                throw new Error("Error en la validacion del esquema");
             }
             const user = await userModels.LoginUser(userData);
-            console.log("Datos recibidos del modelo", user);
-            // if (!user) {
-            //     console.log("Error en el modelo");
-            //     return false
-            // }
-            if (!user) {
-                console.log("Error en el modelo");
-                return false;
-            }
             const token = jwt.sign(user, SECRET_KEY_JWT, { expiresIn: "1h" });
-            console.log("Datos que vamos a pasar", user);
-            console.log("Token generado", token);
             return token;
             
         } catch (error) {
@@ -59,15 +43,15 @@ class UserService{
         console.log(email);
         const {error}= forgotPasswordSchema.validate({email});
         if (error) {
-            return false
+            throw new Error("Error en la validacion del esquema");
         }
         const emailValidate = await userModels.findByEmail(email);
         if (!emailValidate) {
-            return false
+            throw new Error("El email no existe en la base de datos");
         }
         const user = await userModels.getInfo(email);
         if (!user) {
-            return false
+            throw new Error("Error al obtener la informacion del usuario");
         }
         const token = jwt.sign({user}, SECRET_KEY_JWT, {expiresIn: "15m"});
         

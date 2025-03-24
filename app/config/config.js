@@ -20,7 +20,7 @@ export const SALT = parseInt(process.env.SALT);
 
 export const SECRET_KEY_JWT = process.env.SECRET_KEY_JWT;
 
-export const URL = "http://localhost:5173"
+export const URL = "http://localhost:3000"
 
 export const EMAIL_USER = process.env.EMAIL_USER;
 export const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;

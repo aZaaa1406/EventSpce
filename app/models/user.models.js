@@ -10,6 +10,7 @@ class userModel {
         const [rows] = await pool.query(query, [email]);
         return rows.length > 0;
     }
+
     async getPassword(email) {
         //obtenemos el password del usuario y comparamos
         console.log("Datos recibidos en el modelo", email);
@@ -23,6 +24,7 @@ class userModel {
         console.log(user.token);
         return user.token
     }
+    
     async getInfo(email) {
         console.log(email);
         const query = "call getInfoUser(?)"
@@ -31,15 +33,13 @@ class userModel {
         return rows[0][0];
     }
 
-
     async registerUser(userData) {
         try {
             console.log(userData);
             userData.email = userData.email.toLowerCase().trim();
             const emailExist = await this.findByEmail(userData.email);
             if (emailExist) {
-                console.log("email existente");
-                return false
+                throw new Error("El email ya existe en la base de datos");
             }
             const hashPassword = await bcrypt.hash(userData.password, SALT);
             const [result] = await pool.query("CALL registerUser(?,?,?,?,?,?,?,?)", [
@@ -54,10 +54,8 @@ class userModel {
             ]);
 
             if (result.affectedRows > 0) {
-                console.log("todo mal");
-                return false
+                throw new Error("Error al registrar el usuario");
             } else {
-                console.log("todo nais");
                 return true
             }
 
@@ -68,26 +66,20 @@ class userModel {
 
     async LoginUser(userData) {
         try {
-            console.log("Datos recibidos en el modelo", userData);
             userData.email = userData.email.toLowerCase().trim();
             const emailExist = await this.findByEmail(userData.email);
             if (!emailExist) {
-                console.log("email no existente");
-                return false
+                throw new Error("El email no existe en la base de datos");
             }
-            console.log("Email existente");
             const passwordUser = await this.getPassword(userData.email);
-            console.log("Contraseña obtenida", passwordUser);
             const verifyPassword = await bcrypt.compare(userData.password, passwordUser);
-            console.log("Error", verifyPassword);
-            if (verifyPassword) {
-                const user = await this.getInfo(userData.email);
-                console.log(user);
-                return user;
-                
+            console.log(verifyPassword);
+            if (!verifyPassword) {
+                throw new Error("Contraseña incorrecta");
             }
-            return user={
-            }
+            const user = await this.getInfo(userData.email);
+            console.log(user);
+            return user;
         } catch (error) {
             throw error
         }
