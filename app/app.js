@@ -15,13 +15,7 @@ app.use(sesionMid)
 app.use(express.urlencoded({ extended: true }));
 app.use(corsMiddleware);
 app.use(cors({
-    origin: function(origin, callback) {
-        if (URL.indexOf(origin) !== -1 || !origin) {
-            callback(null, true); // Permite la solicitud
-        } else {
-            callback(new Error('Not allowed by CORS')); // Bloquea la solicitud si no está permitido
-        }
-    },
+    origin: URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
