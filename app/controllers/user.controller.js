@@ -81,27 +81,21 @@ export const forgotPassword = async (req, res)=>{
 }
 
 export const resetPassword = async (req, res)=>{
-    const token = req.cookies.reset_token;
-    if(!token){
-        return res.status(400).json({
-            status:400,
-            message:"Error al restablecer la contraseña"
+    try {
+        const token = req.cookies.reset_token;
+        const newPassword = req.body.password;
+    
+        const reset = await userService.resetPassword(newPassword, token);
+        return res
+        .clearCookie("reset_token")
+        .status(200)
+        .json({
+            status:200,
+            message:"Contraseña restablecida correctamente"
         })
+    } catch (error) {
+        throw new Error("Error al restablecer la contraseña")
     }
-    const newPassword = req.body.password;
-
-    const reset = await userService.resetPassword(newPassword, token);
-    if(!reset){
-        return res.status(400).json({
-            status:400,
-            message:"Error al restablecer la contraseña"
-        })
-    }
-    return res
-    .clearCookie("reset_token")
-    .status(200)
-    .json({
-        status:200,
-        message:"Contraseña restablecida correctamente"
-    })
+    
+    
 }

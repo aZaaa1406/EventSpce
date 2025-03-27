@@ -63,17 +63,17 @@ class UserService{
     async resetPassword(newPassword, token){
         const tokenValidate = jwt.verify(token, SECRET_KEY_JWT);
         if (!tokenValidate) {
-            return false
+            throw new Error("Ocurrio un error");
         }
         const {error} = resetPasswordSchema.validate({newPassword});
         if (error) {
-            return false
+            throw new Error(error)
         }
         const newPasswordHash = await bcrypt.hash(newPassword, SALT);
         const query = "UPDATE token SET token = ? where email = ?"
         const result = await pool.query(query, [newPasswordHash, tokenValidate.email]);
         if (result.affectedRows < 0) {
-            return false
+            throw new Error("Error al restablecer la contraseña");
         }
         return true;
 
