@@ -11,7 +11,7 @@ class UserService{
             userData.email = userData.email.toLowerCase().trim();
             const {error} = registerUserSchema.validate(userData);
             if (error) {
-                throw new Error("Error en la validacion del esquema");
+                throw new Error(error);
             }
             const registerUser = await userModels.registerUser(userData);
             if (!registerUser) {

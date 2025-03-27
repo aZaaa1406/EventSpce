@@ -38,6 +38,7 @@ class userModel {
             console.log(userData);
             userData.email = userData.email.toLowerCase().trim();
             const emailExist = await this.findByEmail(userData.email);
+            console.log("Todo nais");
             if (emailExist) {
                 throw new Error("El email ya existe en la base de datos");
             }
