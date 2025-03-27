@@ -5,6 +5,7 @@ export const registerUser = async (req,res)=>{
         const userData = req.body;
         console.log(userData);
         const register = await userService.registerUser(userData);
+        console.log(register);
         return res.status(200).json({
             status:200,
             message:"Usuario registrado correctamente"
