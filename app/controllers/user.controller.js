@@ -22,11 +22,11 @@ export const LoginUser = async (req, res) => {
         const login = await userService.LoginUser(userData);
         return res
             .cookie("access_token", login, {
-                http_only: true,
+                httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'none',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
                 path: "/",
-                masAge: 1000 * 60 * 60
+                maxAge: 1000 * 60 * 60
             }).status(200).json({
                 status: 200,
                 message: "Usuario logeado correctamente"
