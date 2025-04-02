@@ -40,8 +40,8 @@ export const forgotPasswordSchema = joi.object({
 });
 
 export const resetPasswordSchema = joi.object({
-    password: joi.string()
-        .min(6).max(8)
-        .pattern(new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#\$%&])[a-zA-Z0-9#\$%&]{6,8}$/))
+    newPassword: joi.string()
+        .min(6).max(12)
+        .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#\$%&])[A-Za-z\d#\$%&]{6,12}$/)
         .required()
 });

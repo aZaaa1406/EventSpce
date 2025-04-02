@@ -5,7 +5,6 @@ import { ConnectionError, InternalServerError, ValidationError } from "../utils/
 class userModel {
     //Funcion que verifica que la existencia del email en la BD
     async findByEmail(email) {
-        console.log("email recibido del servicio", email);
         const query = "SELECT 1 FROM contacto WHERE email = ? LIMIT 1";
         const [rows] = await pool.query(query, [email]);
         return rows.length > 0;
@@ -13,32 +12,37 @@ class userModel {
 
     async getPassword(email) {
         //obtenemos el password del usuario y comparamos
-        console.log("Datos recibidos en el modelo", email);
-        console.log("Ejecutando query");
         const query = "CALL getPassword(?)"
         const [rows] = await pool.query(query, [email]);
-
-        console.log("query ejecutada");
-        console.log(rows);
         const user = rows[0][0];
-        console.log(user.token);
         return user.token
     }
-    
+
+    async getUserById(id){
+        const query = "CALL getUserById(?)"
+        const [rows] = await pool.query(query, [id]);
+        const user = rows[0][0];
+        return user;
+    }
+
+    //funcion para obtener el usuario mediante el correo
+    async getForgotPassword(email) {
+        const query = "CALL getPassword(?)"
+        const [rows] = await pool.query(query, [email]);
+        const user = rows[0][0];
+        return user;
+    }
     async getInfo(email) {
-        console.log(email);
         const query = "call getInfoUser(?)"
         const [rows] = await pool.query(query, [email]);
-        console.log("filas obtenidas", rows[0][0]);
         return rows[0][0];
     }
 
+
     async registerUser(userData) {
         try {
-            console.log(userData);
             userData.email = userData.email.toLowerCase().trim();
             const emailExist = await this.findByEmail(userData.email);
-            console.log("Todo nais");
             if (emailExist) {
                 throw new Error("El email ya existe en la base de datos");
             }
@@ -74,12 +78,10 @@ class userModel {
             }
             const passwordUser = await this.getPassword(userData.email);
             const verifyPassword = await bcrypt.compare(userData.password, passwordUser);
-            console.log(verifyPassword);
             if (!verifyPassword) {
                 throw new Error("Contraseña incorrecta");
             }
             const user = await this.getInfo(userData.email);
-            console.log(user);
             return user;
         } catch (error) {
             throw error
@@ -87,14 +89,49 @@ class userModel {
 
     }
 
-    async resetPassword(newPassword) {
+    async resetPassword(newPassword, email) {
         try {
             const newPasswordHash = await bcrypt.hash(newPassword, SALT);
-            const query = "UPDATE token SET token = where email = ?"
-            const [rows] = await pool.execute(query, [newPasswordHash]);
+            const lastPaswword = await this.getPassword(email);
+            const verifyPassword = await bcrypt.compare(newPassword, lastPaswword);
+            if (verifyPassword) {
+                throw new Error("La nueva contraseña no puede ser la misma que la anterior")
+            }
+            const query = "CALL resetPassword(?,?)"
+            const [rows] = await pool.query(query, [email, newPasswordHash]);
             return rows.affectedRows > 0;
         } catch (error) {
-            throw error
+            throw new Error("Error al restablecer la contraseña")
+        }
+    }
+    async updateUserModel(userId, updateFields) {
+        try {
+            if (Object.keys(updateFields).length === 0) {
+                throw new ValidationError("No hay campos para actualizar");
+            }
+
+            // Construir la consulta de actualización
+            const fieldsToUpdate = Object.entries(updateFields).map(([key, value]) => `${key}=?`);
+            const values = Object.values(updateFields); // Extraer solo los valores
+
+            let updateQuery = `UPDATE user SET ${fieldsToUpdate.join(", ")} WHERE id_user=?`;
+            values.push(userId); // Añadir el ID del usuario como último valor
+
+            // Ejecutar la consulta
+            const results = await pool.query(updateQuery, values);
+
+            if (results.affectedRows === 0) {
+                throw new ValidationError("No se encontró el usuario");
+            }
+
+            const updatedUser = await this.getUserById(userId); // Obtener el usuario actualizado
+            return updatedUser;
+        } catch (error) {
+            if (error) {
+                throw error;
+            }
+            console.error("Error en updateUser:", error);
+            throw new InternalServerError("Error al actualizar el usuario");
         }
     }
 

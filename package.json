@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "dev": "node --watch app/app.js",
     "start": "node app/app.js"
   },
   "keywords": [],
