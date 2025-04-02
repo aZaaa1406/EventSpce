@@ -22,9 +22,9 @@ export const LoginUser = async (req, res) => {
         const login = await userService.LoginUser(userData);
         return res
             .cookie("access_token", login, {
-                http_only: true,
+                httpOnly: true,
                 secure: process.env.NODE_ENV === 'production' ? true : false,
-                sameSite: 'strict',
+                sameSite: 'none',
                 masAge: 1000 * 60 * 60
             }).status(200).json({
                 status: 200,
@@ -133,9 +133,9 @@ export const updateUser = async (req, res) => {
 
         // Responder con el mensaje de éxito
         res.cookie("access_token", result, {
-            httpOnly: true,
+            http_only: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'None',
+            sameSite: 'none',
             path: "/",
             masAge: 1000 * 60 * 60
         }).status(200).json({ message: "Usuario actualizado correctamente", result });
