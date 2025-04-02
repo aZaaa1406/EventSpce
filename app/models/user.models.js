@@ -30,6 +30,7 @@ class userModel {
         const query = "CALL getPassword(?)"
         const [rows] = await pool.query(query, [email]);
         const user = rows[0][0];
+        console.log(user);
         return user;
     }
     async getInfo(email) {

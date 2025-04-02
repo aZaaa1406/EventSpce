@@ -133,9 +133,10 @@ export const updateUser = async (req, res) => {
 
         // Responder con el mensaje de éxito
         res.cookie("access_token", result, {
-            http_only: true,
-            secure: process.env.NODE_ENV === 'production' ? true : false,
-            sameSite: 'strict',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'None',
+            path: "/",
             masAge: 1000 * 60 * 60
         }).status(200).json({ message: "Usuario actualizado correctamente", result });
     } catch (error) {
