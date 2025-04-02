@@ -22,9 +22,10 @@ export const LoginUser = async (req, res) => {
         const login = await userService.LoginUser(userData);
         return res
             .cookie("access_token", login, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production' ? true : false,
+                http_only: true,
+                secure: process.env.NODE_ENV === 'production',
                 sameSite: 'none',
+                path: "/",
                 masAge: 1000 * 60 * 60
             }).status(200).json({
                 status: 200,
