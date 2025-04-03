@@ -22,15 +22,18 @@ export const LoginUser = async (req, res) => {
         const login = await userService.LoginUser(userData);
         return res
             .cookie("access_token", login, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                httpOnly: true,  // Protección contra XSS
+                secure: true, // Solo enviar la cookie a través de HTTPS en producción
+                sameSite: "none",
                 path: "/",
-                maxAge: 1000 * 60 * 60
-            }).status(200).json({
+                maxAge: 1000 * 60 * 60  // 1 hora
+            })
+            .status(200)
+            .json({
                 status: 200,
                 message: "Usuario logeado correctamente"
-            })
+            });
+
     } catch (error) {
         return res.status(400).json({
             error: error.message
