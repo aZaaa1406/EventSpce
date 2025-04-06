@@ -137,17 +137,14 @@ export const updateUser = async (req, res) => {
         const result = await userService.updateUser(id_user, updateFields);
 
         // Responder con el mensaje de éxito
-        return res
-            .cookie("access_token", login, {
-                httpOnly: process.env.NODE_ENV === 'production' ? true : false,
-                secure: process.env.NODE_ENV === 'production' ? true : false,
-                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-                domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN : undefined,
-                path: "/",
-                maxAge: 1000 * 60 * 60 // 1 hora
-            })
-            .status(200)
-            .json({ message: "Usuario actualizado correctamente", result });
+        res.cookie("access_token", result, {
+            httpOnly: process.env.NODE_ENV === 'production' ? true : false,
+            secure: process.env.NODE_ENV === 'production' ? true : false,
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN : undefined,
+            path: "/",
+            maxAge: 1000 * 60 * 60 // 1 hora
+        }).status(200).json({ message: "Usuario actualizado correctamente", result });
     } catch (error) {
         // Manejo de errores específicos
         if (error) {
