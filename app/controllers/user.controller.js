@@ -23,9 +23,8 @@ export const LoginUser = async (req, res) => {
         return res
             .cookie("access_token", login, {
                 httpOnly: true,  // Protección contra XSS
-                secure: process.env.NODE_ENV === "production" ? true : false, // Solo enviar la cookie a través de HTTPS en producción
-                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-                domain: `.eventspace.tech`,
+                secure: true, // Solo enviar la cookie a través de HTTPS en producción
+                sameSite: "none",
                 path: "/",
                 maxAge: 1000 * 60 * 60  // 1 hora
             })
