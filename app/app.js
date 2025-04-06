@@ -15,11 +15,11 @@ app.use(sesionMid)
 app.use(express.urlencoded({ extended: true }));
 app.use(corsMiddleware);
 app.use(cors({
-    origin: URL,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: "https://www.eventspace.tech",
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true
 }));
+
 app.use('/api', routes)
 
 

@@ -22,11 +22,12 @@ export const LoginUser = async (req, res) => {
         const login = await userService.LoginUser(userData);
         return res
             .cookie("access_token", login, {
-                httpOnly: true,  // Protección contra XSS
-                secure: true, // Solo enviar la cookie a través de HTTPS en producción
-                sameSite: "none",
+                httpOnly: process.env.NODE_ENV === 'production' ? true : false,
+                secure: process.env.NODE_ENV === 'production' ? true : false,
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN : undefined,
                 path: "/",
-                maxAge: 1000 * 60 * 60  // 1 hora
+                maxAge: 1000 * 60 * 60 // 1 hora
             })
             .status(200)
             .json({
