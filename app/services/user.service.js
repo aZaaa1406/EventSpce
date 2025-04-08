@@ -31,7 +31,12 @@ class UserService {
             }
             const user = await userModels.LoginUser(userData);
             const token = jwt.sign(user, SECRET_KEY_JWT, { expiresIn: "1h" });
-            return token;
+            const rol = await userModels.getRol(userData.email);
+            const dataUser = {
+                token: token,
+                rol: rol
+            }
+            return dataUser;
 
         } catch (error) {
             throw error

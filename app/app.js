@@ -4,7 +4,6 @@ import cors from 'cors';
 import { routes } from './routes/index.routes.js';
 import { PORT, URL } from "./config/config.js";
 import { sesionMid } from './middlewares/sesions.js';
-import { errorHandler } from './middlewares/errorMiddleware.js';
 import { corsMiddleware } from './middlewares/cors.js';
 
 
@@ -15,7 +14,7 @@ app.use(sesionMid)
 app.use(express.urlencoded({ extended: true }));
 app.use(corsMiddleware);
 app.use(cors({
-    origin: "https://www.eventspace.tech",
+    origin: URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true
 }));

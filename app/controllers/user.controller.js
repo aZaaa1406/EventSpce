@@ -20,8 +20,9 @@ export const LoginUser = async (req, res) => {
     try {
         const userData = req.body;
         const login = await userService.LoginUser(userData);
+        console.log(login);
         return res
-            .cookie("access_token", login, {
+            .cookie("access_token", login.token, {
                 httpOnly: process.env.NODE_ENV === 'production' ? true : false,
                 secure: process.env.NODE_ENV === 'production' ? true : false,
                 sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
@@ -32,7 +33,8 @@ export const LoginUser = async (req, res) => {
             .status(200)
             .json({
                 status: 200,
-                message: "Usuario logeado correctamente"
+                message: "Usuario logeado correctamente",
+                rol: login.rol
             });
 
     } catch (error) {

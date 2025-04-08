@@ -10,6 +10,13 @@ class userModel {
         return rows.length > 0;
     }
 
+    async getRol(email){
+        const query = "CALL getRol(?)"
+        const [rows] = await pool.query(query, [email]);
+        const user = rows[0][0];
+        return user.rol
+    }
+
     async getPassword(email) {
         //obtenemos el password del usuario y comparamos
         const query = "CALL getPassword(?)"

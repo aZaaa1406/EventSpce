@@ -1,8 +1,10 @@
 import { Router } from "express";
 import userRoutes from "./user.routes.js";
+import adminRoutes from "./admin.routes.js";
 export const routes = Router();
 
 routes.use('/users', userRoutes);
+routes.use('/admin', adminRoutes);
 routes.get('/', (req, res) => {
     res.send('Hello World').status(200).json({
         status:200,
